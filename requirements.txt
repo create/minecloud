@@ -15,9 +15,9 @@ django-pylibmc-sasl==0.2.4
 django-registration==0.8
 django-secure==0.1.2
 django-sse==0.4.1
-gevent==0.13.8
-greenlet==0.4.0
-gunicorn==0.16.1
+gevent
+greenlet
+gunicorn
 honcho==0.2.0
 kombu==2.5.3
 newrelic>=2.38.2.33
