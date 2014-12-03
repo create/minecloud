@@ -10,6 +10,7 @@ from . import tasks
 from .models import Instance, Session
 from .sseview import SseView, send_event
 
+import os
 
 @login_required
 def index(request):
@@ -17,7 +18,7 @@ def index(request):
     current_sessions = None
     err_msg = None
     running_instances = Instance.objects.exclude(state__exact='terminated')
-    if len(running_instances) == 1: 
+    if len(running_instances) == 1:
         instance = running_instances[0]
         current_sessions = (Session.objects
             .filter(instance_id__exact=instance.id)
@@ -25,12 +26,13 @@ def index(request):
         )
     elif len(running_instances) > 1:
         err_msg = "Error: Multiple instances are running at once."
-    return render(request, 
+    return render(request,
                   'launcher/index.html',
                   {'instance': instance,
                    'sessions': current_sessions,
+                   'no_ip_hostname': os.getenv('NO_IP_HOSTNAME', None),
                    'err_msg': err_msg})
-    
+
 @login_required
 @require_POST
 def launch(request):

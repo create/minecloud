@@ -30,7 +30,15 @@
     </div>
 {% elif instance and instance.state == 'pending' %}
     <div id="msm-up">
-        <h2>Server is <span class="text-info">waking up</span> at <span class="text-info">{{ instance.ip_address }}</span>.</h2>
+        <h2>Server is <span class="text-info">waking up</span> at
+            <span class="text-info">
+                {% if no_ip_hostname %}
+                {{ no_ip_hostname }}
+                {% else %}
+                {{ instance.ip_address }}
+                {% endif %}
+            </span>
+        </h2>
         <div class="row">
             <div class="span9">
                 <div class="alert alert-info alert-block"><p>Now, it's restoring saved game data. Almost ready...</p></div>
@@ -41,6 +49,12 @@
                             <td class="server-info-field">IP Address</td>
                             <td>{{ instance.ip_address }}</td>
                         </tr>
+                        {% if no_ip_hostname %}
+                        <tr>
+                            <td class="server-info-field">DDNS Hostname</td>
+                            <td>{{ no_ip_hostname }}</td>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <td class="server-info-field">Start Time</td>
                             <td>{{ instance.start }}</td>
@@ -56,14 +70,28 @@
     </div>
 {% elif instance and instance.state == 'running' %}
     <div id="msm-up">
-        <h2>Server is <span class="text-success">running</span> at <span class="text-success">{{ instance.ip_address }}</span>.</h2>
+        <h2>Server is <span class="text-success">running</span> at
+            <span class="text-success">
+                {% if no_ip_hostname %}
+                {{ no_ip_hostname }}
+                {% else %}
+                {{ instance.ip_address }}
+                {% endif %}
+            </span>
+        </h2>
         <div class="row">
             <div class="span9">
                 <div class="alert alert-success alert-block">
                     <h4><p>Join the server!</p></h4>
                     <ul>
+                        {% if no_ip_hostname %}
+                        <li>Open Minecraft, click Multiplayer, and add a new server.</li>
+                        <li>Copy above hostname into the Server Address field.</li>
+                        {% else %}
                         <li>Open Minecraft, click Multiplayer, and edit the Server Info.</li>
                         <li>Copy the IP address into the Server Address field.</li>
+                        <li>This IP address will change each time the server is restarted.</li>
+                        {% endif %}
                     </ul>
                 </div>
 
@@ -74,6 +102,12 @@
                             <td class="server-info-field">IP Address</td>
                             <td>{{ instance.ip_address }}</td>
                         </tr>
+                        {% if no_ip_hostname %}
+                        <tr>
+                            <td class="server-info-field">DDNS Hostname</td>
+                            <td>{{ no_ip_hostname }}</td>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <td class="server-info-field">Start Time</td>
                             <td>{{ instance.start }}</td>
@@ -177,6 +211,6 @@
                 location.reload(true)
         }, false);
 
-    });    
+    });
     </script>
 {% endblock content %}

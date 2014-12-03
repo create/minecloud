@@ -12,6 +12,11 @@ from django.utils.timezone import utc
 from .models import Instance
 from .sseview import send_event
 
+import urllib
+import urllib2
+import base64
+import string
+
 @task
 def launch(instance_id):
     # Retrive instance obj from DB.
@@ -63,6 +68,17 @@ def launch(instance_id):
     instance.state = 'pending'
     instance.save()
     send_event('instance_state', instance.state)
+
+    # Update dynamic IP
+    dynamic_ip_hostname = os.getenv('NO_IP_HOSTNAME', None)
+    dynamic_ip_username = os.getenv('NO_IP_USERNAME', None)
+    dynamic_ip_password = os.getenv('NO_IP_PASSWORD', None)
+    if dynamic_ip_hostname and dynamic_ip_username and dynamic_ip_password:
+        opener = urllib2.build_opener()
+        auth = base64.encodestring('%s:%s' % (dynamic_ip_username, dynamic_ip_password)).replace('\n', '')
+        opener.addheaders = [('User-agent', 'Minecloud-No-IP/1.0 http://github.com/toffer/minecloud'), ("Authorization", "Basic %s" % auth)]
+        url = "http://dynupdate.no-ip.com/nic/update?hostname=" + urllib.quote_plus(dynamic_ip_hostname) + "&myip=" + urllib.quote_plus(server.ip_address)
+        opener.open(url)
 
     # Send task to check if instance is running
     check_state.delay(instance_id, 'running')
