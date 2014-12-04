@@ -26,7 +26,7 @@ def launch(instance_id):
     ec2_ami = os.getenv('MCL_EC2_AMI')
     ec2_region = os.getenv('MCL_EC2_REGION', 'us-west-2')
     ec2_keypair = os.getenv('MCL_EC2_KEYPAIR','MinecraftEC2')
-    ec2_instancetype = os.getenv('MCL_EC2_INSTANCE_TYPE', 'm1.small')
+    ec2_instancetype = os.getenv('MCL_EC2_INSTANCE_TYPE', 'm3.medium')
     ec2_secgroups = [os.getenv('MCL_EC2_SECURITY_GROUP', 'minecraft')]
 
     # ec2_env_vars populate the userdata.txt file. Cloud-init will append
